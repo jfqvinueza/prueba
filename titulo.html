@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Certificado con Marcos Anidados</title>
+</head>
+<style>
+  /* Reset sencillo */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', Arial, sans-serif;
+  }
+
+  /* Contenedor centrado en la pantalla */
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #e0e7ff;
+    /* Fondo azul claro mejorado */
+    padding: 20px;
+  }
+
+  /* Div con tamaño físico A4 en orientación Landscape (Horizontal) */
+  .a4 {
+    height: 210mm;
+    /* Altura A4 Landscape */
+    width: 297mm;
+    /* Ancho A4 Landscape */
+    background: white;
+    border: 1px solid #9ca3af;
+    /* Borde suave para la vista en pantalla */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+    /* ---------------------------------------------------- */
+    /* MARCO 1 (Distancia): 7mm (T/B) y 9mm (L/R) del borde A4 */
+    padding: 5mm 7mm;
+    /* ---------------------------------------------------- */
+  }
+
+  /* MARCO 2 (Borde Dorado 1): Distancia de 2mm del Marco 1 */
+  .frame-2 {
+    /* Borde más delgado */
+    border: 0.7mm solid gold;
+    /* Distancia para el Marco 3: 2mm */
+    padding: 2mm;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* MARCO 3 (Borde Dorado 2): Distancia de 2mm del Marco 2 */
+  .frame-3 {
+    /* Borde más delgado */
+    border: 0.5mm solid gold;
+    /* Distancia para el Marco 4: 2mm */
+    padding: 2mm;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* MARCO 4 (Borde Dorado 3): Distancia de 7mm del Marco 3 */
+  .frame-4 {
+    /* Borde más delgado */
+    border: 0.5mm solid gold;
+    /* Distancia para el Marco Recortado: 7mm */
+    padding: 5mm;
+    height: 100%;
+    width: 100%;
+  }
+
+
+/* MARCO 5 (Recortado): El marco con las puntas recortadas */
+.marco {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background: white;
+  /* 🛑 IMPORTANTE: Quitamos 'overflow: hidden' de la vista de pantalla */
+  /* overflow: hidden; */ 
+
+  /* Borde interior de 3px dorado (más delgado) */
+  box-shadow: 0 0 0 2px gold inset;
+
+  /* Contenido interno: Separación del texto del borde recortado */
+  /* 🛑 IMPORTANTE: Quitamos padding del .marco y lo movemos a .contenido-certificado */
+  /* padding: 10mm; 
+  padding-top: 16mm; */
+  
+  /* Definición del recorte de esquina (Radio: 30px) */
+  clip-path:
+    polygon(30px 0, calc(100% - 30px) 0,
+      100% 30px, 100% calc(100% - 30px),
+      calc(100% - 30px) 100%, 30px 100%,
+      0 calc(100% - 30px), 0 30px);
+}
+
+/* 💡 NUEVA CLASE: Contenedor de Contenido */
+.contenido-certificado {
+    height: 100%;
+    width: 100%;
+    /* Reintroducimos el padding aquí */
+    padding: 10mm; 
+    padding-top: 16mm;
+    /* Asegura que el contenido esté por encima del fondo blanco de los pseudo-elementos */
+    position: relative;
+    z-index: 3; 
+}
+
+  /* Pseudo-elemento para cubrir las esquinas (fondo blanco) */
+  .marco::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle 30px at top left, white 98%, transparent 100%) top left,
+      radial-gradient(circle 30px at top right, white 98%, transparent 100%) top right,
+      radial-gradient(circle 30px at bottom left, white 98%, transparent 100%) bottom left,
+      radial-gradient(circle 30px at bottom right, white 98%, transparent 100%) bottom right;
+    background-size: 60px 60px;
+    background-repeat: no-repeat;
+    z-index: 1;
+  }
+
+  /* Pseudo-elemento para el detalle del borde dorado en la esquina */
+  .marco::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle 31px at top left, transparent 92%, gold 94%, transparent 100%) top left,
+      radial-gradient(circle 31px at top right, transparent 92%, gold 94%, transparent 100%) top right,
+      radial-gradient(circle 31px at bottom left, transparent 92%, gold 94%, transparent 100%) bottom left,
+      radial-gradient(circle 31px at bottom right, transparent 92%, gold 94%, transparent 100%) bottom right;
+    background-size: 60px 60px;
+    background-repeat: no-repeat;
+    z-index: 2;
+  }
+
+  /* Opciones para impresión */
+  @page {
+    size: A4 landscape;
+    /* Asegura A4 horizontal */
+    margin: 0;
+    /* Sin márgenes de la impresora */
+  }
+
+  @media print {
+
+    body {
+      /* Restablece el body para la impresión */
+      min-height: auto;
+      background: none;
+      padding: 0;
+    }
+
+    .a4 {
+      box-shadow: none;
+      border: none;
+      height: 210mm;
+      width: 297mm;
+      padding: 7mm 9mm;
+      /* Mantiene la primera distancia en impresión */
+    }
+
+
+
+  }
+</style>
+
+<body>
+  <div class="a4">
+    <!-- MARCO 1 (Distancia: 7mm T/B, 9mm L/R) definido por el padding del .a4 -->
+    <div class="frame-2">
+      <!-- MARCO 2 (Borde: 1mm gold) + Distancia (2mm padding) -->
+      <div class="frame-3">
+        <!-- MARCO 3 (Borde: 1mm gold) + Distancia (2mm padding) -->
+        <div class="frame-4">
+          <!-- MARCO 4 (Borde: 1mm gold) + Distancia (7mm padding) -->
+          <div class="marco">
+            <!-- MARCO 5 (Recortado, 3px inset gold) -->
+            <div class="contenido-certificado">
+              <h1 style="text-align: center; letter-spacing: 5px; font-size: 34px; color: #3b82f6;">
+                TÍTULO DE BACHILLER
+              </h1>
+              <!-- HR ahora cubre el 100% de ancho y usa el color azul -->
+              <hr style="width: 52%; margin: 0px auto 30px auto; border: 1px solid #3b82f6;">
+
+              <!-- Texto base oscuro (#1f2937), manteniendo negrillas -->
+              <p style="text-align: center; font-size: 16px; line-height: 1.6; color: #1f2937;">
+                El Ministerio de Educación y la institución educativa:<br><br>
+                <strong style="font-size: 18px; color: #1f2937;">UNIDAD EDUCATIVA FISCAL “LUCIANO ANDRADE
+                  MARÍN”</strong><br><br>
+                CONFIERE A:<br><br>
+              </p>
+              <p style="text-align: center; font-size: 30px; margin-bottom: 20px; color: #1f2937;">
+                <strong>VINUEZA NARANJO DILAN DAVID</strong>
+              </p>
+              <p style="text-align: center; font-size: 16px; margin-bottom: 50px; color: #1f2937;">
+                <strong>El Título Bachiller en Ciencias</strong>
+              </p>
+
+              <p style="text-align: center; font-size: 14px; margin-bottom: 20px; line-height: 1.5; color: #1f2937;">
+                Por haber aprobado los estudios reglamentarios en el nivel de Bachillerato<br>
+                con la calificación de <strong>8,65</strong> (Ocho Coma Sesenta Y Cinco)
+              </p>
+
+              <p style="text-align: center; font-size: 14px; margin-bottom: 50px; color: #1f2937;">
+                Dado y firmado en <strong>Pichincha</strong>, <strong>19 de agosto de 2024</strong>
+              </p>
+
+              <div class="seal-and-signatures"
+                style="display: flex; justify-content: space-around; align-items: flex-end; margin-top: 30px;">
+                <div class="seal" style="text-align: center; font-size: 12px; color: #1f2937;">
+
+                  <p style="margin-top: 10px;"><br>
+                    <strong style="color: #1f2937;">DIGNA MARISOL CONDOR GARCIA</strong><br>
+                    Rector(a)
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+            <!-- ==================== desde aqui van los logos =============================== -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
